@@ -35,11 +35,11 @@ connectButton.onclick = async () => {
     }),
   });
 
-  
+
   const { id: newStreamId, offer, ice_servers: iceServers, session_id: newSessionId } = await sessionResponse.json()
   streamId = newStreamId;
   sessionId = newSessionId;
-  
+
   try {
     sessionClientAnswer = await createPeerConnection(offer, iceServers);
   } catch (e) {
@@ -62,7 +62,7 @@ talkButton.onclick = async () => {
   // Get the user input from the text input field
     if (peerConnection?.signalingState === 'stable' || peerConnection?.iceConnectionState === 'connected') {
       const userInput = document.getElementById('user-input-field').value; // Get the user's input from the input field
-  
+
       const talkResponse = await fetch(`${DID_API.url}/talks/streams/${streamId}`, {
         method: 'POST',
         headers: { Authorization: `Basic ${DID_API.key}`, 'Content-Type': 'application/json' },
@@ -91,9 +91,6 @@ talkButton.onclick = async () => {
             result_format: 'mp4'
           },
           'driver_url': 'bank://lively/',
-          'config': {
-            'stitch': true,
-          },
           'session_id': sessionId
         })
       });
@@ -121,13 +118,13 @@ function onIceCandidate(event) {
   console.log('onIceCandidate', event);
   if (event.candidate) {
     const { candidate, sdpMid, sdpMLineIndex } = event.candidate;
-    
+
     fetch(`${DID_API.url}/talks/streams/${streamId}/ice`,
       {
         method: 'POST',
         headers: {Authorization: `Basic ${DID_API.key}`, 'Content-Type': 'application/json'},
         body: JSON.stringify({ candidate, sdpMid, sdpMLineIndex, session_id: sessionId})
-      }); 
+      });
   }
 }
 function onIceConnectionStateChange() {
